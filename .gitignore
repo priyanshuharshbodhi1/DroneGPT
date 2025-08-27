@@ -1,0 +1,42 @@
+# Python Virtual Environment
+airsim_env/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# IDE Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local test files
+# test_*.py
+# *_test.py
+
+# API Keys (Security)
+*.env
+.env
+api_keys.txt
+
+# AirSim logs and cache
+AirSimExe.log
+*.tmp
+
+# Documentation builds
+docs/_build/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
