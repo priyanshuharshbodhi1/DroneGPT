@@ -1,34 +1,36 @@
-# -*- coding: utf-8 -*-
-# @Time    : 2025/07/10  23:12
-# @Author  : mariswang@rflysim
-# @File    : airsim_agent.py
-# @Software: PyCharm
-# @Describe:
-# -*- encoding:utf-8 -*-
+
 import os
 from openai import OpenAI
 import re
 import tello_wrapper
+from dotenv import load_dotenv
 
-BASE_URL = "https://api.intelligence.io.solutions/api/v1/"
-ARK_API_KEY = "*****" # your api key，visit https://ai.io.net/ai/api-keys
-MODEL = "deepseek-ai/DeepSeek-R1-0528" #model list：https://docs.io.net/reference/get-started-with-io-intelligence-api
+# Load environment variables from .env file
+load_dotenv()
 
-#初始化无人机
+# GPT-OSS API CONFIGURATION via Hugging Face
+# Get your FREE API key from: https://huggingface.co/settings/tokens
+HF_TOKEN = os.getenv("HF_TOKEN")
+if not HF_TOKEN:
+    raise ValueError("HF_TOKEN not found in environment variables. Please set it in .env file.")
+MODEL = "openai/gpt-oss-120b:cerebras"  # gpt-oss model via Cerebras provider
+
+# Initialize drone
 aw = tello_wrapper.TelloWrapper()
 
 class TelloAgent:
-    def __init__(self, system_prompts="system_prompts/airsim_basic.txt", knowledge_prompt="prompts/airsim_basic.txt", chat_history=[]):
-        #llm client
+    def __init__(self, system_prompts="system_prompts/airsim_basic.txt", knowledge_prompt="prompts/airsim_basic.txt", chat_history=[], reasoning_effort="medium"):
+        # gpt-oss client via Hugging Face
         self.client = OpenAI(
-            base_url = BASE_URL,
-            api_key = ARK_API_KEY,
+            base_url="https://router.huggingface.co/v1",
+            api_key=HF_TOKEN,
         )
+        self.reasoning_effort = reasoning_effort
 
-        # 先对话列表，全局变量
+        # Chat history list, global variable
         self.chat_history = []
 
-        # 系统提示词，读取并加入对话记录
+        # System prompt, read and add to chat history
         sys_prompt = open(system_prompts, "r", encoding="utf8").read()
         chat_history.append(
             {
@@ -37,13 +39,13 @@ class TelloAgent:
             }
         )
 
-        # 知识库，并加入对话记录，通过聊天函数，加入知识库
+        # Knowledge base, add to chat history through chat function
         kg_prompt = open(knowledge_prompt, "r", encoding="utf8").read()
         self.ask(kg_prompt)
 
-    # 调用chat api，包含历史记录，多轮对话
+    # Call chat API with history for multi-turn conversation
     def ask(self, prompt):
-        # 加入用户输入的prompt
+        # Add user input prompt
         self.chat_history.append(
             {
                 "role": "user",
@@ -57,10 +59,10 @@ class TelloAgent:
             temperature=0.1,
         )
 
-        #h回复
+        # Response
         content = completion.choices[0].message.content
 
-        # 加入机器人回复，相当于保存全部的历史记录，多轮对话
+        # Add bot response, equivalent to saving all history for multi-turn conversation
         self.chat_history.append(
             {
                 "role": "assistant",
@@ -70,7 +72,7 @@ class TelloAgent:
 
         return content
 
-    # 解析python代码
+    # Parse python code
     def extract_python_code(self, content):
         """
         Extracts the python code from a response.
@@ -89,20 +91,51 @@ class TelloAgent:
         else:
             return None
 
-    def process(self, command,run_python_code=False):
-        #step 1, ask ernie
+    def process(self, command, run_python_code=False):
+        # step 1, ask gpt-oss
         response = self.ask(command)
 
-        #step 2, extract python code
+        # step 2, extract python code
         python_code = self.extract_python_code(response)
 
-        #step 3, exec python code
+        # step 3, exec python code
         if run_python_code and python_code:
             exec(python_code)
         return python_code
+    
+    def advanced_reasoning(self, command, reasoning_effort="high"):
+        """
+        Use gpt-oss advanced reasoning capabilities for complex drone missions
+        """
+        try:
+            enhanced_prompt = f"""
+            TELLO DRONE MISSION: {command}
+            
+            Please provide detailed reasoning for this Tello drone mission including:
+            1. Safety considerations for indoor/outdoor flight
+            2. Step-by-step execution plan
+            3. Potential risks and mitigation strategies
+            4. Python code to execute the mission using Tello functions
+            
+            Use your advanced reasoning capabilities to ensure safe and optimal execution.
+            """
+            
+            response = self.ask(enhanced_prompt)
+            python_code = self.extract_python_code(response)
+            
+            return {
+                'reasoning': response,
+                'code': python_code
+            }
+        except Exception as e:
+            print(f"Advanced reasoning failed, falling back to standard mode: {e}")
+            return {
+                'reasoning': self.ask(command),
+                'code': self.extract_python_code(self.ask(command))
+            }
 
 if __name__=="__main__":
-    airsim_agent = AirSimAgent(knowledge_prompt="prompts/aisim_lession23.txt")
-    command = "起飞"
-    python_code = airsim_agent.process(command)
+    tello_agent = TelloAgent()
+    command = "takeoff"
+    python_code = tello_agent.process(command)
     print("python_code:", python_code)
