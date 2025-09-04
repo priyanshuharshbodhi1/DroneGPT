@@ -14,22 +14,18 @@ The following objects exist in the scene, and you should refer to them using **e
 
 Please note that when calling functions, if you're using a non-English language, you should use the English identifiers listed below for object names. The mapping is as follows:
 
-- `turbine1`: 风力发电机1  
-- `turbine2`: 风力发电机2  
-- `solarpanels`: 太阳能电池板  
-- `car`: 汽车  
-- `crowd`: 人群  
-- `tower1`: 塔1  
-- `tower2`: 塔2  
-- `tower3`: 塔3  
+- `turbine1`: WindTurbine1  
+- `turbine2`: WindTurbine2  
+- `solarpanels`: SolarPanels  
+- `car`: Car  
+- `crowd`: Crowd  
+- `tower1`: Tower1  
+- `tower2`: Tower2  
+- `tower3`: Tower3  
 
 For example, to get the position of WindTurbine1, you would write:  
 ```python
 aw.get_position("turbine1")
-```  
-instead of:  
-```python
-aw.get_position("风力发电机1")
 ```
 
 Regarding coordinate system conventions, we use the **NED ("North-East-Down")** coordinate system, where:
