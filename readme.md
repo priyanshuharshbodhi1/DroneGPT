@@ -31,7 +31,7 @@ Our project combines **gpt-oss** and **AirSim**, leveraging the powerful reasoni
 
 The system adopts a typical **embodied intelligence framework**, where gpt-oss provides key planning, perception, and decision-making capabilities.
 
-<img src="img/workflow.png" alt="IO.AIRGPT Framework" width="600">
+<img src="img/workflow.png" alt="DroneGPT Framework" width="600">
 
 ---
 
