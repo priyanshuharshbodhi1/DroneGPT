@@ -48,7 +48,7 @@ The system adopts a typical **embodied intelligence framework**, where gpt-oss p
 - `tello_wrapper.py`: Real Tello EDU drone interface with safety protocols
 
 ### **Demonstration Notebooks**  
-- `1-airsim_io_env.ipynb`: gpt-oss environment setup and basic reasoning
+- `1-airsim_gpt_oss_env.ipynb`: gpt-oss environment setup and basic reasoning
 - `2-basic_control.ipynb`: Simple drone commands with gpt-oss intelligence
 - `3-complex_control.ipynb`: Advanced mission planning using gpt-oss reasoning
 - `4-solar_matrix.ipynb`: Industrial inspection mission with reasoning effort control
