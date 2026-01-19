@@ -1,6 +1,8 @@
 ## Project Overview  
 **DroneGPT-OSS: Advanced Drone Control with OpenAI's gpt-oss Reasoning Models**
 
+**VIDEO LINK**: (10 S Demo Tello Drone)   https://www.youtube.com/watch?v=eYLP1fv5g40&t=141s
+
 🏆 **Submitted to OpenAI Open Model Hackathon - "Best in Robotics" Category**
 
 This project demonstrates the unique capabilities of **OpenAI's gpt-oss** (open-weight reasoning models) for autonomous drone control. Using natural language instructions, gpt-oss provides advanced reasoning, safety analysis, and mission planning for both simulated and real drone operations.
